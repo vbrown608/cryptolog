@@ -6,15 +6,21 @@ import (
 	// "os"
 	"crypto/hmac"
 	"crypto/md5"
+	"crypto/rand"
 	"encoding/base64"
 	"regexp"
 )
 
 var (
-	salt = "ueErQYkQp5A9LrNbRQ1+XQ=="
+	salt = make([]byte, 10)
 )
 
 func main() {
+	generateSalt()
+}
+
+func generateSalt() {
+	rand.Read(salt)
 }
 
 func processSingleLogEntry(log_entry string) string {
