@@ -1,4 +1,4 @@
-package cryptolog
+package main
 
 import "testing"
 
