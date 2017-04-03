@@ -8,7 +8,7 @@ import (
   "crypto/md5"
   "crypto/rand"
   "encoding/base64"
-  // "flag"
+  "flag"
   "regexp"
   "time"
   "bufio"
@@ -19,8 +19,13 @@ var (
 )
 
 func main() {
-  // var _delay = flag.Duration("", 1234, "help message for flagname")
-  go generateSalt(time.Minute)
+  saltLifetime := flag.Duration("salt-lifetime", time.Hour*24,
+`Set the lifetime of the hash salt.
+This is the duration during which the hashes of a given ip will be identical.
+See https://golang.org/pkg/time/#ParseDuration for format.` )
+  flag.Parse()
+  go generateSalt(*saltLifetime)
+
   scanner := bufio.NewScanner(os.Stdin)
   for scanner.Scan() {
     entry := processSingleLogEntry(scanner.Text())
@@ -29,8 +34,10 @@ func main() {
 }
 
 func generateSalt(delay time.Duration) {
-  rand.Read(salt)
-  time.Sleep(delay)
+  for {
+    rand.Read(salt)
+    time.Sleep(delay)
+  }
 }
 
 func processSingleLogEntry(log_entry string) string {
