@@ -47,9 +47,8 @@ func generateSalt(delay time.Duration) {
 
 func processSingleLogEntry(log_entry string) string {
   r, _ := regexp.Compile(ipv4_exp + "|" + ipv6_exp)
-  indexes := r.FindStringSubmatchIndex(log_entry)
-  hashedIP := hashIp(log_entry[indexes[2]:indexes[3]])
-  return log_entry[:indexes[2]] + hashedIP + log_entry[indexes[3]:]
+  hashed_entry := r.ReplaceAllStringFunc(log_entry, hashIp)
+  return hashed_entry
 }
 
 func hashIp(ip string) string {
