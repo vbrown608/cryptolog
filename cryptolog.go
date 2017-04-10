@@ -14,6 +14,11 @@ import (
   "bufio"
 )
 
+const (
+  ipv4_exp = `(\d\d?\d?\.\d\d?\d?\.\d\d?\d?\.\d\d?\d?)`
+  ipv6_exp = `(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))`
+)
+
 var (
   salt = make([]byte, 10)
 )
@@ -41,8 +46,7 @@ func generateSalt(delay time.Duration) {
 }
 
 func processSingleLogEntry(log_entry string) string {
-  ipv4_exp := `^(\d\d?\d?\.\d\d?\d?\.\d\d?\d?\.\d\d?\d?).*`
-  r, _ := regexp.Compile(ipv4_exp)
+  r, _ := regexp.Compile(ipv4_exp + "|" + ipv6_exp)
   indexes := r.FindStringSubmatchIndex(log_entry)
   hashedIP := hashIp(log_entry[indexes[2]:indexes[3]])
   return log_entry[:indexes[2]] + hashedIP + log_entry[indexes[3]:]
