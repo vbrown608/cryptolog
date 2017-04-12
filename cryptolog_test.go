@@ -26,6 +26,9 @@ func TestProcessSingleLogEntry(t *testing.T) {
 		want  string
 		r     *regexp.Regexp
 	}{
+		{`[29/Mar/2017:20:09:52 +0000] "GET / HTTP/1.1" 304 -`,
+			`[29/Mar/2017:20:09:52 +0000] "GET / HTTP/1.1" 304 -`,
+			replaceAllRegexp},
 		{`172.17.0.1 - - [29/Mar/2017:20:09:52 +0000] "GET / HTTP/1.1" 304 -`,
 			`JKx+3b - - [29/Mar/2017:20:09:52 +0000] "GET / HTTP/1.1" 304 -`,
 			replaceAllRegexp},

@@ -25,8 +25,7 @@ var (
 )
 
 func main() {
-	saltLifetime := flag.Duration("salt-lifetime", time.Hour*24,
-		`Set the lifetime of the hash salt.
+	saltLifetime := flag.Duration("salt-lifetime", time.Hour*24, `Set the lifetime of the hash salt.
 This is the duration during which the hashes of a given ip will be identical.
 See https://golang.org/pkg/time/#ParseDuration for format.`)
 	replaceAll := flag.Bool("replace-all-matches", true, `Replace all occurences of IP addresses within the string.
