@@ -9,11 +9,8 @@ RUN apt-get update && \
     /tmp/* \
     /var/tmp/*
 
-RUN mkdir /tmp/tmp
-RUN cat /etc/nginx/nginx.conf
 RUN mkfifo /var/log/nginx/.access.pipe
 RUN sed -i 's/^[^#]*access_log.\+$/    access_log  \/var\/log\/nginx\/\.access\.pipe  main;/g' /etc/nginx/nginx.conf
-RUN cat /etc/nginx/nginx.conf
 
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:$PATH
