@@ -25,6 +25,7 @@ var (
 )
 
 func main() {
+	outpath := flag.String("outfile", "", `Destination for encrypted server logs`)
 	saltLifetime := flag.Duration("salt-lifetime", time.Hour*24, `Set the lifetime of the hash salt.
 This is the duration during which the hashes of a given ip will be identical.
 See https://golang.org/pkg/time/#ParseDuration for format.`)
@@ -34,11 +35,25 @@ If false, only the first occurance with be replaced.`)
 
 	go generateSalt(*saltLifetime)
 
+	var out *os.File
+	if *outpath != "" {
+		var err error
+		out, err = os.Create(*outpath)
+		if err != nil {
+			fmt.Println("Cannot create logfile")
+			fmt.Println(err)
+			return
+		}
+		defer out.Close()
+	} else {
+		out = os.Stdout
+	}
+
 	r := compileRegexp(*replaceAll)
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		entry := processSingleLogEntry(scanner.Text(), r)
-		fmt.Println(entry)
+		fmt.Fprintln(out, entry)
 	}
 }
 
