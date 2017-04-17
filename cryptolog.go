@@ -21,7 +21,7 @@ const (
 )
 
 var (
-	salt = make([]byte, 10)
+	salt = make([]byte, 16)
 )
 
 func main() {
