@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"sync"
 	"time"
 )
 
@@ -22,6 +23,7 @@ const (
 
 var (
 	salt = make([]byte, 16)
+	mu   sync.Mutex
 )
 
 func main() {
@@ -59,6 +61,8 @@ If false, only the first occurance with be replaced.`)
 
 func generateSalt(delay time.Duration) {
 	for {
+		mu.Lock()
+		defer mu.Unlock()
 		rand.Read(salt)
 		time.Sleep(delay)
 	}
@@ -79,6 +83,8 @@ func processSingleLogEntry(logEntry string, r *regexp.Regexp) string {
 }
 
 func hashIP(ip string) string {
+	mu.Lock()
+	defer mu.Unlock()
 	mac := hmac.New(md5.New, []byte(salt))
 	mac.Write([]byte(ip))
 	hashedIP := mac.Sum(nil)
